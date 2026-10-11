@@ -9,7 +9,7 @@ Deploy the Qpump smart contract on Qubic — a new, non-custodial launchpad for 
 
 ## Context
 
-Qpump is a **new** smart contract — an initial deployment, not an upgrade. It does not exist on-chain yet and changes nothing about any existing contract. It calls QX and Qswap through their published interfaces only, and sends a share of its fees to the QTREAT contract.
+Qpump is a **new** smart contract — an initial deployment, not an upgrade. It does not exist on-chain yet and changes nothing about any existing contract. It calls QX and Qswap through their published interfaces only, and sends a share of its fees to the QX and QTREAT contracts.
 
 ## What The Yard Does
 
@@ -52,12 +52,14 @@ Every launch, buy, sell and transfer settles through the contract, where the fee
 - Launch: **25,000,000 QU** — 20,000,000 to shareholders, 5,000,000 burned into the execution reserve.
 - Trade: **1%** of each trade, or **1,000 QU**, whichever is greater, charged on top of the price and never skimmed out of the curve.
 - Transfer: **100 QU** flat, burned.
-- The trade fee splits **34% to Qpump shareholders**, **33% into a QDOGE buyback**, and **33% to the QTREAT contract's dividend fund**. All three destinations are compile-time constants, so no key can redirect them.
-- The shareholder share is taken as the remainder, so rounding dust accrues to shareholders rather than being lost.
+- The trade fee splits **34% to the QX contract**, which pays it out to QX shareholders, **33% into a QDOGE buyback**, and **33% to the QTREAT contract's dividend fund**. All three destinations are compile-time constants, so no key can redirect them.
+- The QX share is taken as the remainder, so rounding dust accrues to QX shareholders rather than being lost.
+- Trade fees do not pay Qpump's own shareholders. Qpump shareholders are paid from the 20,000,000 QU launch-fee share.
 
 ### Dividends and Buyback
 
-- Each epoch the contract pays its shareholder pot with `distributeDividends`, transfers the QTREAT share to the QTREAT contract, and burns its burn pot into the execution reserve.
+- Each epoch the contract transfers the QX share to the QX contract and the QTREAT share to the QTREAT contract, pays its launch-fee shareholder pot with `distributeDividends`, and burns its burn pot into the execution reserve.
+- Neither transfer needs a cross-contract call: QX books an incoming `qpiTransfer` into its earned amount and QTREAT into its dividend fund, and each pays its own holders.
 - The QDOGE share is spent in a **single Qswap purchase once per epoch**, capped at 2% of the pool's QU, so the flat swap fee is paid once. The QDOGE bought stays in the contract, which has no function to move it.
 - Burns are not a cost to anyone: they fund the contract's own execution reserve, so Qubic is paid for running it without external top-ups.
 
@@ -83,7 +85,7 @@ When the last curve token sells, the contract runs the whole escape itself, resu
 
 - Qpump has no admin and no privileged role. There is no pause, no fee setter, no withdrawal and no upgrade path. Every parameter is a compile-time constant and every function is open to everyone on the same terms.
 - `Process` is permissionless: anyone can settle an opening batch, retry a stalled graduation, push payouts or expire an idle token. The contract also does this itself every tick.
-- There is no platform wallet. Fees only ever reach shareholders, the QDOGE buyback, the QTREAT contract, or the contract's own execution reserve.
+- There is no platform wallet. Fees only ever reach the QX contract, the QDOGE buyback, the QTREAT contract, Qpump shareholders, or the contract's own execution reserve.
 
 ### Interface
 

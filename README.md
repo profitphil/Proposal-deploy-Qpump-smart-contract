@@ -51,7 +51,7 @@ Every launch, buy, sell and transfer settles through the contract, where the fee
 
 - Launch: **25,000,000 QU** — 20,000,000 to shareholders, 5,000,000 burned into the execution reserve.
 - Trade: **1%** of each trade, or **1,000 QU**, whichever is greater, charged on top of the price and never skimmed out of the curve.
-- Transfer: **100 QU** flat, burned.
+- Transfer: **100 QU** flat, burned, plus **1,000 QU** when the transfer creates a holder position for a recipient that had none — that part is paid into the coin's own raise, funding the delivery budget the new position reserves.
 - The trade fee splits **34% to the QX contract**, which pays it out to QX shareholders, **33% into a QDOGE buyback**, and **33% to the QTREAT contract's dividend fund**. All three destinations are compile-time constants, so no key can redirect them.
 - The QX share is taken as the remainder, so rounding dust accrues to QX shareholders rather than being lost.
 - Trade fees do not pay Qpump's own shareholders. Qpump shareholders are paid from the 20,000,000 QU launch-fee share.
